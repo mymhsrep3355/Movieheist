@@ -1,15 +1,19 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  Image,
-  TouchableOpacity,
-} from "react-native";import React from 'react'
+import React, { useState } from "react";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { Input } from "react-native-elements";
+import { useNavigation } from "@react-navigation/native";
 
 const Register = () => {
+  const [username, setUserName] = useState('');
+  const [input, setInput] = useState("");
+  const [password, setPassword] = useState("");
+  const navigation = useNavigation();
   return (
     <View style={styles.mainView}>
+      <Image
+        style={styles.backgroundImg}
+        source={require("../assets/RegisterBanner.jpg")}
+      />
       <View style={styles.child_view1}>
         <Image
           style={styles.logo}
@@ -19,10 +23,20 @@ const Register = () => {
 
       <View style={styles.child_view2}>
         <Input
+          value={username}
+          onChangeText={(name) => setUserName(name)}
+          inputContainerStyle={{ borderBottomWidth: 0 }}
+          placeholderTextColor={"red"}
+          type="text"
+          placeholder="Name"
+          style={styles.textInput}
+        ></Input>
+
+        <Input
           value={input}
           onChangeText={(text) => setInput(text)}
           inputContainerStyle={{ borderBottomWidth: 0 }}
-          placeholderTextColor={"white"}
+          placeholderTextColor={"red"}
           type="email"
           placeholder="Email"
           style={styles.textInput}
@@ -33,7 +47,7 @@ const Register = () => {
           onChangeText={(password) => setPassword(password)}
           inputContainerStyle={{ borderBottomWidth: 0 }}
           secureTextEntry={true}
-          placeholderTextColor={"white"}
+          placeholderTextColor={"red"}
           type="password"
           placeholder="Password"
           style={styles.textInput}
@@ -41,26 +55,21 @@ const Register = () => {
       </View>
       <View style={styles.child_view3}>
         <TouchableOpacity
-          style={
-            password.length < 4
-              ? styles.view3_btn
-              : styles.view3_btnRed
-          }
+          onPress={() => navigation.navigate("Plans", {
+            username: username,
+            email: input,
+            password: password,
+          })}
+          style={password.length < 4 ? styles.view3_btn : styles.view3_btnRed}
         >
-          <Text style={styles.view3_text}>SIGN IN</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={()=>
-        navigation.navigate("Register")}>
-          <Text style={styles.view3_text_secondary}>
-            New to Movieheist? Sign Up Now
-          </Text>
+          <Text style={styles.view3_text}>REGISTER</Text>
         </TouchableOpacity>
       </View>
     </View>
-  )
-}
+  );
+};
 
-export default Register
+export default Register;
 
 const styles = StyleSheet.create({
   mainView: {
@@ -74,13 +83,21 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   logo: {
-    height: 100,
+    height: 150,
     width: 200,
     marginTop: 70,
+    objectFit: "fill",
+  },
+  backgroundImg: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
   },
   child_view2: {
-    flex: 0.4,
-    marginTop: 150,
+    flex: 0.5,
+    marginTop: 110,
     width: 300,
     alignItems: "center",
   },
@@ -89,11 +106,11 @@ const styles = StyleSheet.create({
     marginTop: 7,
     color: "white",
     padding: 10,
-    backgroundColor: "gray",
+    backgroundColor: "black",
     borderRadius: 4,
   },
   child_view3: {
-    flex: 0.3,
+    flex: 0.2,
     width: 300,
   },
   view3_btn: {
@@ -102,7 +119,7 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     marginRight: "auto",
     padding: 10,
-    borderColor: "white",
+    // borderColor: "white",
     borderWidth: 2,
     justifyContent: "center",
     alignItems: "center",
@@ -115,8 +132,8 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     marginRight: "auto",
     padding: 10,
-    borderColor: "black",
-    borderWidth: 2,
+    // borderColor: "black",
+    borderWidth: 1,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "red",
