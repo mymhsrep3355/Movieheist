@@ -12,6 +12,9 @@ import { AntDesign } from "@expo/vector-icons";
 import app from "../Firebase.js";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { ListItem } from "react-native-elements";
+// import { Fontisto } from '@expo/vector-icons';
+import { Entypo } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 
 const Plans = () => {
   const [plansData, setPlansData] = useState([]);
@@ -49,16 +52,53 @@ const Plans = () => {
           <Text>Watch All you want Ad Free</Text>
         </View>
 
-        <View style={styles.planCards}/>
+        <View style={styles.planCards} />
 
-          {plansData.map((item, index) => (
-            <TouchableOpacity style={styles.cardsContainer} key={index}>
+        {plansData.map((item, index) => (
+          <TouchableOpacity style={styles.cardsContainer} key={index}>
+            <View style={styles.innerContainer}>
               <View style={styles.cardsContainer_view}>
                 <Text style={styles.cardsContainer_text}>{item.name}</Text>
               </View>
-            </TouchableOpacity>
-          ))}
 
+              <Text style={styles.innerContainer_Price}>
+                Price: PKR {item.price}
+              </Text>
+            </View>
+            <View style={styles.innerContainer2}>
+              <View>
+                <Text style={styles.innerContainer2_text1}>
+                  Video Quality: {item.videoQuality}
+                </Text>
+                <Text style={styles.innerContainer2_text2}>
+                  Resolution: {item.resolution}
+                </Text>
+              </View>
+              <MaterialIcons name="local-movies" size={24} color="black" />
+            </View>
+
+            <View
+              style={{
+                marginTop: 10,
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text>Devices applicable: </Text>
+              <View style={{ flexDirection: "row", alignItems: "center" }}>
+                {item.devices.map((device, index) => (
+                  <Entypo
+                    key={index}
+                    name={device.name}
+                    size={24}
+                    color="red"
+                    style={{ marginLeft: 5 }} // Adjust the styling as needed
+                  />
+                ))}
+              </View>
+            </View>
+          </TouchableOpacity>
+        ))}
       </View>
     </SafeAreaView>
   );
@@ -87,27 +127,48 @@ const styles = StyleSheet.create({
     marginLeft: "auto",
     marginTop: 3,
   },
-  planCards:{
-    marginTop:25,
+  planCards: {
+    marginTop: 25,
   },
-  cardsContainer:{
-    height:140,
-    borderRadius:7,
-    borderColor:'red',
-    padding:10,
-    borderWidth:1,
-    marginBottom:8,
+  cardsContainer: {
+    height: 140,
+    borderRadius: 7,
+    borderColor: "red",
+    padding: 10,
+    borderWidth: 1,
+    marginBottom: 8,
   },
-  cardsContainer_view:{
-    backgroundColor:'#E50914',
-    padding:10,
-    width:120,
-    borderRadius:7,
+  cardsContainer_view: {
+    backgroundColor: "#E50914",
+    padding: 10,
+    width: 120,
+    borderRadius: 7,
   },
-  cardsContainer_text:{
-    textAlign:'center',
-    color:'white',
-    fontSize:15,
-    fontWeight:'400'
-  }
+  cardsContainer_text: {
+    textAlign: "center",
+    color: "white",
+    fontSize: 15,
+    fontWeight: "400",
+  },
+  innerContainer: {
+    flexDirection: "row",
+    flexWrap: "nowrap",
+    justifyContent: "space-between",
+  },
+  innerContainer_Price: {
+    fontWeight: "bold",
+  },
+  innerContainer2: {
+    marginTop: 5,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  innerContainer2_text1: {
+    fontWeight: "normal",
+    color: "gray",
+  },
+  innerContainer2_text2: {
+    color: "black",
+    fontWeight: "500",
+  },
 });
