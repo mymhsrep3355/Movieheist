@@ -10,8 +10,10 @@
   },
   "dependencies": {
     "@expo/webpack-config": "^19.0.0",
+    "@react-native-firebase/auth": "^18.6.1",
     "@react-navigation/native": "^6.1.9",
     "@react-navigation/native-stack": "^6.9.17",
+    "@stripe/stripe-react-native": "^0.35.0",
     "expo": "~49.0.15",
     "expo-status-bar": "~1.6.0",
     "firebase": "^10.5.2",

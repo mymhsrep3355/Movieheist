@@ -1,21 +1,33 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  Image,
-  TouchableOpacity,
-} from "react-native";
-import React, { useState } from "react";
-import { KeyboardAvoidingView } from "react-native-web";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { Input } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
+import { auth, signInWithEmailAndPassword } from "../Firebase";
 
 const Login = () => {
-  const [input, setInput] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
   const navigation = useNavigation();
-// console.log(input);
+
+  useEffect(() => {
+    auth.onAuthStateChanged((user) => {
+      if (user) {
+        navigation.navigate("LoadingScreen");
+      }
+    });
+  }, []);
+
+  const handleLogin = () => {
+    signInWithEmailAndPassword(auth, email, password)
+      .then((userCredentials) => {
+        const user = userCredentials.user;
+        console.log('Logged in with:', user.email);
+        setError(null); // Clear any previous errors
+      })
+      .catch((error) => setError("Invalid credentials")); // Set the error message
+  };
+
   return (
     <View style={styles.mainView}>
       <View style={styles.child_view1}>
@@ -27,8 +39,8 @@ const Login = () => {
 
       <View style={styles.child_view2}>
         <Input
-          value={input}
-          onChangeText={(text) => setInput(text)}
+          value={email}
+          onChangeText={(email) => setEmail(email)}
           inputContainerStyle={{ borderBottomWidth: 0 }}
           placeholderTextColor={"white"}
           type="email"
@@ -39,16 +51,25 @@ const Login = () => {
         <Input
           value={password}
           onChangeText={(password) => setPassword(password)}
-          inputContainerStyle={{ borderBottomWidth: 0 }}
+          inputContainerStyle={{
+            borderTopWidth: 1,
+            borderBottomWidth: 2,
+            borderTopColor: error ? "red" : "gray",
+            borderBottomColor: error ? "red" : "gray",
+             // Set border color based on error
+          }}
           secureTextEntry={true}
           placeholderTextColor={"white"}
           type="password"
           placeholder="Password"
           style={styles.textInput}
         ></Input>
+
+        {error && <Text style={styles.errorText}>{error}</Text>}
       </View>
       <View style={styles.child_view3}>
         <TouchableOpacity
+          onPress={handleLogin}
           style={
             password.length < 4
               ? styles.view3_btn
@@ -57,8 +78,7 @@ const Login = () => {
         >
           <Text style={styles.view3_text}>SIGN IN</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={()=>
-        navigation.navigate("Register")}>
+        <TouchableOpacity onPress={() => navigation.navigate("Register")}>
           <Text style={styles.view3_text_secondary}>
             New to Movieheist? Sign Up Now
           </Text>
@@ -71,6 +91,10 @@ const Login = () => {
 export default Login;
 
 const styles = StyleSheet.create({
+  errorText: {
+    color: "red",
+    marginTop: 10,
+  },
   mainView: {
     flex: 1,
     backgroundColor: "black",

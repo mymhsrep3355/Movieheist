@@ -1,13 +1,34 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { Input } from "react-native-elements";
 import { useNavigation } from "@react-navigation/native";
+import {app,  auth , createUserWithEmailAndPassword } from "../Firebase.js";
+
+
 
 const Register = () => {
   const [username, setUserName] = useState('');
-  const [input, setInput] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigation = useNavigation();
+
+  useEffect(()=>{
+    auth.onAuthStateChanged(user =>{
+      if (user) {
+        navigation.navigate("LoadingScreen")
+      }
+    })
+  }, [])
+
+  const handleSignUp = () => {
+    
+    createUserWithEmailAndPassword(auth, email, password).then(userdata =>{
+        const user = userdata.user;
+        console.log("registered mail > ", user.email);
+      })
+      .catch(err => alert(err.message))
+  }
+
   return (
     <View style={styles.mainView}>
       <Image
@@ -33,8 +54,8 @@ const Register = () => {
         ></Input>
 
         <Input
-          value={input}
-          onChangeText={(text) => setInput(text)}
+          value={email}
+          onChangeText={(email) => setEmail(email)}
           inputContainerStyle={{ borderBottomWidth: 0 }}
           placeholderTextColor={"red"}
           type="email"
@@ -55,14 +76,19 @@ const Register = () => {
       </View>
       <View style={styles.child_view3}>
         <TouchableOpacity
-          onPress={() => navigation.navigate("Plans", {
-            username: username,
-            email: input,
-            password: password,
-          })}
+          disabled={!email && !password}
+          onPress={handleSignUp}
           style={password.length < 4 ? styles.view3_btn : styles.view3_btnRed}
         >
           <Text style={styles.view3_text}>REGISTER</Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.child_view4}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Plans")}
+          style={styles.view4_btn}
+        >
+          <Text style={styles.view3_text}>SEE PLANS</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -96,7 +122,7 @@ const styles = StyleSheet.create({
     height: "100%",
   },
   child_view2: {
-    flex: 0.5,
+    flex: 0.4,
     marginTop: 110,
     width: 300,
     alignItems: "center",
@@ -110,7 +136,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
   },
   child_view3: {
-    flex: 0.2,
+    flex: 0.1,
     width: 300,
   },
   view3_btn: {
@@ -124,6 +150,19 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "black",
+    height: 50,
+  },
+  view4_btn: {
+    borderRadius: 5,
+    width: 150,
+    marginLeft: "auto",
+    marginRight: "auto",
+    padding: 10,
+    borderColor: "white",
+    borderWidth: 0.1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "red",
     height: 50,
   },
   view3_btnRed: {
@@ -142,12 +181,17 @@ const styles = StyleSheet.create({
   view3_text: {
     color: "white",
   },
-  view3_text_secondary: {
-    justifyContent: "center",
-    alignItems: "center",
-    color: "white",
-    marginTop: 15,
-    marginLeft: "auto",
-    marginRight: "auto",
-  },
+  child_view4:{
+    flex: 0.1,
+    width: 300,
+  }
+  // view3_text_secondary: {
+  //   justifyContent: "center",
+  //   alignItems: "center",
+  //   color: "white",
+  //   marginTop: 15,
+  //   marginLeft: "auto",
+  //   marginRight: "auto",
+  // },
+  
 });

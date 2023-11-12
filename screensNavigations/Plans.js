@@ -11,142 +11,157 @@ import { AntDesign } from "@expo/vector-icons";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { Entypo } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
-import app from "../Firebase";
-import auth from "../Firebase";
+import { useNavigation } from "@react-navigation/native";
+import {app,  auth } from "../Firebase.js";
+import { useRoute } from "@react-navigation/native";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+
 
 const Plans = () => {
   const [selected, setselected] = useState([]);
   const [price, setprice] = useState();
   const [plansData, setPlansData] = useState([]);
+  // const route = useRoute();
+  // const email = route.params.email;
+  // const password = route.params.password;
   console.log(selected);
   console.log(price);
-
+  const navigation = useNavigation();
+  
   useEffect(() => {
     const database = getDatabase(app);
     const dbRef = ref(database, "Plans");
 
     // Set up a listener to fetch data when it changes
-    onValue(dbRef, (snapshot) => {
-      if (snapshot.exists()) {
-        // Convert the snapshot's value to an array of plans
-        const plansArray = Object.values(snapshot.val());
+    onValue(dbRef, (data) => {
+      if (data.exists()) {
+
+        const plansArray = Object.values(data.val());
         setPlansData(plansArray);
       }
     });
   }, []);
 
+
   return (
     <>
-    
-    <ScrollView style={{ marginTop: 10 }}>
-      <View style={styles.bigContainer}>
-        <Text style={styles.bigContainer_text}>
-          Choose your plan that is good for you!
-        </Text>
-        <View style={styles.view2}>
-          <AntDesign name="check" size={23} color={"red"} />
-          <Text>Access to All Features, Recommendation</Text>
-        </View>
-        <View style={styles.view2}>
-          <AntDesign name="check" size={23} color={"red"} />
-          <Text>Cancel Subscription Anytime</Text>
-        </View>
-        <View style={styles.view2}>
-          <AntDesign name="check" size={23} color={"red"} />
-          <Text>Watch All you want Ad Free</Text>
-        </View>
+      <ScrollView style={{ marginTop: 10 }}>
+        <View style={styles.bigContainer}>
+          <Text style={styles.bigContainer_text}>
+            Choose your plan that is good for you!
+          </Text>
+          <View style={styles.view2}>
+            <AntDesign name="check" size={23} color={"red"} />
+            <Text>Access to All Features, Recommendation</Text>
+          </View>
+          <View style={styles.view2}>
+            <AntDesign name="check" size={23} color={"red"} />
+            <Text>Cancel Subscription Anytime</Text>
+          </View>
+          <View style={styles.view2}>
+            <AntDesign name="check" size={23} color={"red"} />
+            <Text>Watch All you want Ad Free</Text>
+          </View>
 
-        <View style={styles.planCards} />
+          <View style={styles.planCards} />
 
-        {plansData.map((item, index) => (
-          <TouchableOpacity
-            onPress={() => {
-              setselected(item.name);
-              setprice(item.price);
-              //adding style
-            }}
-            style={
-              selected.includes(item.name)
-                ? {
-                    height: 180,
-                    borderRadius: 7,
-                    borderColor: "green",
-                    padding: 10,
-                    borderWidth: 2.5,
-                    marginBottom: 8,
-                  }
-                : {
-                    height: 140,
-                    borderRadius: 7,
-                    borderColor: "red",
-                    padding: 10,
-                    borderWidth: 0.5,
-                    marginBottom: 8,
-                  }
-            }
-            key={index}
-          >
-            <View style={styles.innerContainer}>
-              <View style={styles.cardsContainer_view}>
-                <Text style={styles.cardsContainer_text}>{item.name}</Text>
-              </View>
-
-              <Text style={styles.innerContainer_Price}>
-                Price: PKR {item.price}
-              </Text>
-            </View>
-            <View style={styles.innerContainer2}>
-              <View>
-                <Text style={styles.innerContainer2_text1}>
-                  Video Quality: {item.videoQuality}
-                </Text>
-                <Text style={styles.innerContainer2_text2}>
-                  Resolution: {item.resolution}
-                </Text>
-              </View>
-              <MaterialIcons name="local-movies" size={24} color="black" />
-            </View>
-
-            <View
-              style={{
-                marginTop: 10,
-                flexDirection: "row",
-                alignItems: "center",
+          {plansData.map((item, index) => (
+            <TouchableOpacity
+              onPress={() => {
+                setselected(item.name);
+                setprice(item.price);
+                //adding style
               }}
+              style={
+                selected.includes(item.name)
+                  ? {
+                      height: 180,
+                      borderRadius: 7,
+                      borderColor: "green",
+                      padding: 10,
+                      borderWidth: 2.5,
+                      marginBottom: 8,
+                    }
+                  : {
+                      height: 140,
+                      borderRadius: 7,
+                      borderColor: "red",
+                      padding: 10,
+                      borderWidth: 0.5,
+                      marginBottom: 8,
+                    }
+              }
+              key={index}
             >
-              <Text>Devices applicable: </Text>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
-                {item.devices.map((device, index) => (
-                  <Entypo
-                    key={index}
-                    name={device.name}
-                    size={25}
-                    color="red"
-                    style={{ marginLeft: 5 }} // Adjust the styling as needed
-                  />
-                ))}
+              <View style={styles.innerContainer}>
+                <View style={styles.cardsContainer_view}>
+                  <Text style={styles.cardsContainer_text}>{item.name}</Text>
+                </View>
+
+                <Text style={styles.innerContainer_Price}>
+                  Price: PKR {item.price}
+                </Text>
               </View>
+              <View style={styles.innerContainer2}>
+                <View>
+                  <Text style={styles.innerContainer2_text1}>
+                    Video Quality: {item.videoQuality}
+                  </Text>
+                  <Text style={styles.innerContainer2_text2}>
+                    Resolution: {item.resolution}
+                  </Text>
+                </View>
+                <MaterialIcons name="local-movies" size={24} color="black" />
+              </View>
+
+              <View
+                style={{
+                  marginTop: 10,
+                  flexDirection: "row",
+                  alignItems: "center",
+                }}
+              >
+                <Text>Devices applicable: </Text>
+                <View style={{ flexDirection: "row", alignItems: "center" }}>
+                  {item.devices.map((device, index) => (
+                    <Entypo
+                      key={index}
+                      name={device.name}
+                      size={25}
+                      color="red"
+                      style={{ marginLeft: 5 }} // Adjust the styling as needed
+                    />
+                  ))}
+                </View>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </ScrollView>
+
+      {selected.length > 0 ? (
+        <TouchableOpacity
+          style={styles.bottomBTN}
+        >
+          <View>
+            <Text style={styles.bottomBTN_text}>Selected Plan: {selected}</Text>
+          </View>
+
+          <TouchableOpacity>
+            <Text style={{ fontSize: 10, fontWeight: "bold", color: "white" }}>
+              Pay Amount: PKR{price}
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=> {
+            navigation.navigate("Login")
+          }}>
+            <View>
+              <Text style={styles.bottomBTN_textlogin}>LOGIN</Text>
             </View>
           </TouchableOpacity>
-        ))}
-      </View>
-    </ScrollView>
-
-    {selected.length > 0 ? (
-  <TouchableOpacity style={styles.bottomBTN}>
-    <View>
-      <Text style={styles.bottomBTN_text}>Selected Plan: {selected}</Text>
-    </View>
-
-    <TouchableOpacity>
-      <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'white' }}>
-        Pay Amount: PKR{price}
-      </Text>
-    </TouchableOpacity>
-  </TouchableOpacity>
-) : null}
-
-    </>// to render a single compoennt, empty fragment
+        </TouchableOpacity>
+      ) : null}
+    </> // to render a single compoennt, empty fragment
   );
 };
 
@@ -217,18 +232,23 @@ const styles = StyleSheet.create({
     color: "black",
     fontWeight: "500",
   },
-  bottomBTN:{
-    backgroundColor: 'red',
+  bottomBTN: {
+    backgroundColor: "red",
     padding: 15,
     marginBottom: 9,
-    alignItems: 'center',
-    justifyContent:'space-between',
-    flexDirection:'row',
-    height:50,
+    alignItems: "center",
+    justifyContent: "space-between",
+    flexDirection: "row",
+    height: 50,
   },
-  bottomBTN_text:{
-    color:'white',
-    fontSize: 15,
-    fontWeight:'500',
-  }
+  bottomBTN_text: {
+    color: "white",
+    fontSize: 10,
+    fontWeight: "500",
+  },
+  bottomBTN_textlogin: {
+    color: "white",
+    fontSize: 17,
+    fontWeight: "bold",
+  },
 });
