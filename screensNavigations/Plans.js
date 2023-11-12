@@ -2,26 +2,26 @@ import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
   TouchableOpacity,
-  Pressable,
   ScrollView,
 } from "react-native";
+
 import React, { useEffect, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
-import app from "../Firebase.js";
 import { getDatabase, ref, onValue } from "firebase/database";
-import { ListItem } from "react-native-elements";
-// import { Fontisto } from '@expo/vector-icons';
 import { Entypo } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
+import firebase from "../Firebase";
 
 const Plans = () => {
+  const [selected, setselected] = useState([]);
+  const [price, setprice] = useState();
+  console.log(selected);
   const [plansData, setPlansData] = useState([]);
 
   useEffect(() => {
-    const database = getDatabase();
-    const dbRef = ref(database, "Plans");
+    const database = getDatabase(firebase);
+    const dbRef = ref(database, "Plans ");
 
     // Set up a listener to fetch data when it changes
     onValue(dbRef, (snapshot) => {
@@ -34,7 +34,7 @@ const Plans = () => {
   }, []);
 
   return (
-    <SafeAreaView>
+    <ScrollView style={{ marginTop: 10 }}>
       <View style={styles.bigContainer}>
         <Text style={styles.bigContainer_text}>
           Choose your plan that is good for you!
@@ -55,7 +55,10 @@ const Plans = () => {
         <View style={styles.planCards} />
 
         {plansData.map((item, index) => (
-          <TouchableOpacity style={styles.cardsContainer} key={index}>
+          <TouchableOpacity onPress={()=>{
+            setselected(item.name);
+            setprice(item.price);
+          }} style={styles.cardsContainer} key={index}>
             <View style={styles.innerContainer}>
               <View style={styles.cardsContainer_view}>
                 <Text style={styles.cardsContainer_text}>{item.name}</Text>
@@ -100,7 +103,7 @@ const Plans = () => {
           </TouchableOpacity>
         ))}
       </View>
-    </SafeAreaView>
+    </ScrollView>
   );
 };
 
