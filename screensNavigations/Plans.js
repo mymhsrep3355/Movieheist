@@ -11,17 +11,19 @@ import { AntDesign } from "@expo/vector-icons";
 import { getDatabase, ref, onValue } from "firebase/database";
 import { Entypo } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
-import firebase from "../Firebase";
+import app from "../Firebase";
+import auth from "../Firebase";
 
 const Plans = () => {
   const [selected, setselected] = useState([]);
   const [price, setprice] = useState();
-  console.log(selected);
   const [plansData, setPlansData] = useState([]);
+  console.log(selected);
+  console.log(price);
 
   useEffect(() => {
-    const database = getDatabase(firebase);
-    const dbRef = ref(database, "Plans ");
+    const database = getDatabase(app);
+    const dbRef = ref(database, "Plans");
 
     // Set up a listener to fetch data when it changes
     onValue(dbRef, (snapshot) => {
@@ -34,6 +36,8 @@ const Plans = () => {
   }, []);
 
   return (
+    <>
+    
     <ScrollView style={{ marginTop: 10 }}>
       <View style={styles.bigContainer}>
         <Text style={styles.bigContainer_text}>
@@ -55,10 +59,33 @@ const Plans = () => {
         <View style={styles.planCards} />
 
         {plansData.map((item, index) => (
-          <TouchableOpacity onPress={()=>{
-            setselected(item.name);
-            setprice(item.price);
-          }} style={styles.cardsContainer} key={index}>
+          <TouchableOpacity
+            onPress={() => {
+              setselected(item.name);
+              setprice(item.price);
+              //adding style
+            }}
+            style={
+              selected.includes(item.name)
+                ? {
+                    height: 180,
+                    borderRadius: 7,
+                    borderColor: "green",
+                    padding: 10,
+                    borderWidth: 2.5,
+                    marginBottom: 8,
+                  }
+                : {
+                    height: 140,
+                    borderRadius: 7,
+                    borderColor: "red",
+                    padding: 10,
+                    borderWidth: 0.5,
+                    marginBottom: 8,
+                  }
+            }
+            key={index}
+          >
             <View style={styles.innerContainer}>
               <View style={styles.cardsContainer_view}>
                 <Text style={styles.cardsContainer_text}>{item.name}</Text>
@@ -93,7 +120,7 @@ const Plans = () => {
                   <Entypo
                     key={index}
                     name={device.name}
-                    size={24}
+                    size={25}
                     color="red"
                     style={{ marginLeft: 5 }} // Adjust the styling as needed
                   />
@@ -104,6 +131,22 @@ const Plans = () => {
         ))}
       </View>
     </ScrollView>
+
+    {selected.length > 0 ? (
+  <TouchableOpacity style={styles.bottomBTN}>
+    <View>
+      <Text style={styles.bottomBTN_text}>Selected Plan: {selected}</Text>
+    </View>
+
+    <TouchableOpacity>
+      <Text style={{ fontSize: 15, fontWeight: 'bold', color: 'white' }}>
+        Pay Amount: PKR{price}
+      </Text>
+    </TouchableOpacity>
+  </TouchableOpacity>
+) : null}
+
+    </>// to render a single compoennt, empty fragment
   );
 };
 
@@ -133,14 +176,14 @@ const styles = StyleSheet.create({
   planCards: {
     marginTop: 25,
   },
-  cardsContainer: {
-    height: 140,
-    borderRadius: 7,
-    borderColor: "red",
-    padding: 10,
-    borderWidth: 1,
-    marginBottom: 8,
-  },
+  // cardsContainer: {
+  //   height: 140,
+  //   borderRadius: 7,
+  //   borderColor: "red",
+  //   padding: 10,
+  //   borderWidth: 1,
+  //   marginBottom: 8,
+  // },
   cardsContainer_view: {
     backgroundColor: "#E50914",
     padding: 10,
@@ -174,4 +217,18 @@ const styles = StyleSheet.create({
     color: "black",
     fontWeight: "500",
   },
+  bottomBTN:{
+    backgroundColor: 'red',
+    padding: 15,
+    marginBottom: 9,
+    alignItems: 'center',
+    justifyContent:'space-between',
+    flexDirection:'row',
+    height:50,
+  },
+  bottomBTN_text:{
+    color:'white',
+    fontSize: 15,
+    fontWeight:'500',
+  }
 });
