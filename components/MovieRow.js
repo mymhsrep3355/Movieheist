@@ -21,24 +21,28 @@ const MovieRow = ({ title, url }) => {
   return (
     <View>
       <Text style={{ fontSize: 19, fontWeight: "bold", color: "white" }}>{title}</Text>
-      <ScrollView horizontal showsVerticalScrollIndicator={false}>
-        {movies.map((movie, id) => (
-          <Pressable key={id}>
-            <Image
-              style={{
-                width: 105,
-                margin: 10,
-                height: 152,
-                borderRadius: 6,
-                resizeMode: "cover",
-              }}
-              source={{
-                uri: `https://image.tmdb.org/t/p/original/${movie?.poster_path}`,
-              }}
-            />
-          </Pressable>
-        ))}
-      </ScrollView>
+      {Array.isArray(movies) && movies.length > 0 ? (
+        <ScrollView horizontal showsVerticalScrollIndicator={false}>
+          {movies.map((movie, id) => (
+            <Pressable key={id}>
+              <Image
+                style={{
+                  width: 105,
+                  margin: 10,
+                  height: 152,
+                  borderRadius: 6,
+                  resizeMode: "cover",
+                }}
+                source={{
+                  uri: `https://image.tmdb.org/t/p/original/${movie?.poster_path}`,
+                }}
+              />
+            </Pressable>
+          ))}
+        </ScrollView>
+      ) : (
+        <Text style={{ color: "white" }}>No movies available</Text>
+      )}
     </View>
   );
 };
