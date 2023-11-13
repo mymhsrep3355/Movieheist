@@ -8,6 +8,8 @@ import Register from "./screensNavigations/Register.js";
 import Plans from "./screensNavigations/Plans.js";
 import Home from "./screensNavigations/Home.js";
 import LoadingScreen from "./screensNavigations/LoadingScreen.js";
+import LoadingScreen2 from "./screensNavigations/LoadingScreen2.js";
+import MainPage from "./screensNavigations/MainPage.js";
 export default function App() {
   const Stack = createNativeStackNavigator();
   return (
@@ -36,6 +38,16 @@ export default function App() {
           <Stack.Screen
             name="Home"
             component={Home}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="LoadingScreen2"
+            component={LoadingScreen2}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name="MainPage"
+            component={MainPage}
             options={{ headerShown: false }}
           />
         </Stack.Navigator>
